@@ -1,0 +1,73 @@
+1. HappyHaven is a fast-growing house rental app that connects property owners with potential renters.
+As a data analyst at HappyHaven, your role is crucial in unlocking the power of data to understand user behavior, property performance, and overall market trends.
+By leveraging the company's extensive database, you contribute to various aspects of the business, ensuring data-driven decision-making and continuous
+improvement of the app's features and offerings.
+Overall, this database design enables users to browse and book properties, leave reviews, add properties to favorites, and make payments for their bookings. 
+The tables are interconnected using primary keys and foreign keys to maintain data integrity and provide a well-structured database for the property rental system.
+
+Task
+Retrieve all reviews by users who have booked properties in more than one location.
+Arrange the results in ascending order of user IDs.
+
+select rv.property_id, rv.user_id, rv.comment
+from reviews rv 
+where rv.user_id in (
+select bk.user_id from
+bookings bk 
+join 
+properties prop
+on bk.property_id = prop.property_id
+group by bk.user_id
+having count(distinct prop.location) >1)
+order by rv.user_id;
+
+2. Find all users who have made more than one payment and have at least one booking for the month of July 2023.
+Arrange the results in ascending order of user IDs.
+
+SELECT u.user_id, u.name, u.email
+FROM Users u
+INNER JOIN (
+    SELECT user_id
+    FROM Payments
+    GROUP BY user_id
+    HAVING COUNT(payment_id) > 1
+) p ON u.user_id = p.user_id
+INNER JOIN (
+    SELECT user_id
+    FROM Bookings
+    WHERE start_date BETWEEN '2023-07-01' AND '2023-07-31'
+       OR end_date BETWEEN '2023-07-01' AND '2023-07-31'
+    GROUP BY user_id
+) b ON u.user_id = b.user_id
+ORDER BY u.user_id;
+
+3. List all properties with their average rating greater than 4 and the number of reviews they have received.
+Present the results in ascending order of property IDs.
+
+SELECT prop.property_id, prop.title, prop.location,
+       (SELECT AVG(rating)
+        FROM Reviews rv
+        WHERE rv.property_id = prop.property_id) AS average_rating,
+       (SELECT COUNT(review_id)
+        FROM Reviews rv
+        WHERE rv.property_id = prop.property_id) AS review_count
+FROM Properties prop
+WHERE prop.property_id IN (
+    SELECT property_id
+    FROM Reviews
+    GROUP BY property_id
+    HAVING AVG(rating) > 4
+)
+ORDER BY prop.property_id;
+
+4. Retrieve properties that have a rating higher than the average rating of all properties in the dataset.
+Present the results in ascending order of property IDs.
+
+select prop.property_id, prop.title, prop.location, prop.rating, 
+(select avg(rating) from properties) as avg_all_ratings
+from 
+properties prop
+where prop.rating >
+(select avg(rating) from properties)
+order by prop.property_id;
+
