@@ -1,1 +1,131 @@
+Case Study:- This case study scenario involves user complaints and ride information associated with ABC Cab-booking App. 
+You have been given a dataset containing multiple tables associated with the case study.
 
+1. As a new data analyst at ABC Cab-booking App, your task is to analyze the data and provide insights.
+Can you retrieve a comprehensive report that combines the user_information table with the user_rides table?
+
+select * from
+user_rides ur
+full join
+user_information ui
+on ui.user_id = ur.user_id
+
+2. As a new data analyst at ABC Cab-booking App, you have been provided with a dataset containing driver feedback associated with user rides. Your task is to analyze the data and provide insights.
+Can you retrieve a comprehensive report that combines the drivers table with the driver_feedback table
+
+select * from 
+drivers dr
+full join 
+driver_feedback df
+on dr.id = df.driver_id
+
+3. As a data analyst at ABC Cab-Booking App, you are tasked with exploring potential partnerships and collaborations to enhance the services offered to customers.
+You have access to the cities table, which lists all the cities where the cab service operates, and the partner_companies table, containing information about potential partner companies from various industries.
+Your objective is to generate all possible combinations of cities and partner companies.
+Your findings will play a crucial role in guiding decision-making processes related to partnerships and driving growth for the ABC Cab Booking App.
+
+select * from 
+cities
+cross join 
+partner_companies
+
+4. You are assigned the task of conducting market research and analyzing target audience segments to optimize marketing strategies and enhance customer engagement.
+You have access to the cities table, which contains information about cities where the cab service operates, and the customer_segments table, which categorizes customers into different segments based on demographics and preferences.
+
+select city_name, segment_name from 
+cities 
+cross join 
+customer_segments
+
+5. The ABC Cab-booking App encountered a peculiar case.
+A user with ID 10115 had a series of complaints.
+As a data analyst, can you use your SQL skills to retrieve all the complaint details?
+
+select uc.complaint_id, ui.user_id, ui. full_name, cc.category_name
+from
+user_complaints uc
+inner join 
+complaint_category cc
+on uc.category_id = cc.category_id
+inner join 
+user_information ui 
+on ui.user_id = uc.user_id
+where ui.user_id  = 10115;
+
+6. As a data analyst for ABC Cab-booking App, you are tasked with analyzing all the complaints with status as 'resolved' or 'legal action taken'.
+You have been provided with two tables: complaint_status and user_complaints.
+This analysis will enable you to gain insights into the resolution outcomes and legal actions taken in response to user complaints.
+Your findings will contribute to enhancing the overall customer experience and improving the efficiency of complaint management within the ABC Cab-booking App.
+
+select cs.complaint_id, cs.status, uc.subcategory_id 
+from 
+complaint_status cs
+inner join 
+user_complaints uc 
+on cs.complaint_id = uc.complaint_id
+where cs.status = 'resolved' or
+cs.status = 'legal action taken';
+
+7. SQL JOINs Cab Complaints Report
+You are a customer support representative for the ABC Cab-booking App, which has been facing some user complaints related to rides.
+The company provided you with a dataset containing user complaints.
+
+Task
+Generate a report that lists all complaints, including those with missing user information.
+
+select uc.complaint_id, ui.full_name, ui.email, cc.category_name, cd.reason
+from 
+user_complaints uc 
+left join 
+user_information ui 
+on ui.user_id = uc.user_id
+inner join
+complaint_category cc
+on  uc.category_id = cc.category_id
+inner join 
+category_description cd 
+on cc.category_id = cd.category_id
+order by uc.complaint_id asc;
+
+
+8. In the world of the ABC Cab-booking App, there exist a rare breed of users who have never complained about anything.It's as if they have discovered the secret to eternal cab-booking bliss.
+As a data analyst for the app, your mission is to uncover these complaint-free individuals. By addressing any underlying issues and ensuring a seamless experience for all users, 
+you can contribute to enhancing user satisfaction and retention within the ABC Cab-booking App.
+
+Task
+Filter cases where the complaint ID is null.
+
+select ui.user_id, ui.full_name
+from 
+user_information ui 
+left join
+user_complaints uc
+on uc.user_id = ui.user_id
+where uc.complaint_id is null;
+
+9. As a data analyst at ABC Cab-booking App, you are tasked with analyzing user complaints and their resolution status.
+You have access to the user_complaints table, which contains information about user complaints, and the complaint_status table, which stores the status updates for each complaint.
+This analysis will provide valuable insights into the status and progress of user complaints, enabling you to assess the resolution efficiency.
+
+Task
+Your objective is to retrieve a distinct list of complaint IDs, along with the corresponding user details and most recent status, including those without any complaints.
+
+select cs.complaint_id, uc.user_id, cs.status, MAX(cs.updated)
+from user_complaints uc
+right join 
+complaint_status cs 
+on uc.complaint_id = cs.complaint_id
+group by 1;
+
+10. As a data analyst for ABC Cab-booking App, your objective is to analyze the driver distribution across different cities and identify any cities without assigned drivers.
+You have access to two tables: cities, which contains information about the cities where the cab service operates, and drivers, which stores details about the drivers including their assigned city.
+
+Task
+Your task is to retrieve a comprehensive list of all cities and their associated driver information, even if there are no matching records in the drivers table for certain cities.
+
+select ct.city_id, ct.city_name, dr.id, dr.name 
+from 
+drivers dr
+right join 
+cities ct
+on ct.city_id = dr.city_id
