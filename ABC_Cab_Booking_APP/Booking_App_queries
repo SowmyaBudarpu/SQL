@@ -8,7 +8,7 @@ select * from
 user_rides ur
 full join
 user_information ui
-on ui.user_id = ur.user_id
+on ui.user_id = ur.user_id;
 
 2. As a new data analyst at ABC Cab-booking App, you have been provided with a dataset containing driver feedback associated with user rides. Your task is to analyze the data and provide insights.
 Can you retrieve a comprehensive report that combines the drivers table with the driver_feedback table
@@ -17,7 +17,7 @@ select * from
 drivers dr
 full join 
 driver_feedback df
-on dr.id = df.driver_id
+on dr.id = df.driver_id;
 
 3. As a data analyst at ABC Cab-Booking App, you are tasked with exploring potential partnerships and collaborations to enhance the services offered to customers.
 You have access to the cities table, which lists all the cities where the cab service operates, and the partner_companies table, containing information about potential partner companies from various industries.
@@ -35,11 +35,11 @@ You have access to the cities table, which contains information about cities whe
 select city_name, segment_name from 
 cities 
 cross join 
-customer_segments
+customer_segments;
 
 5. The ABC Cab-booking App encountered a peculiar case.
 A user with ID 10115 had a series of complaints.
-As a data analyst, can you use your SQL skills to retrieve all the complaint details?
+retrieve all the complaint details?
 
 select uc.complaint_id, ui.user_id, ui. full_name, cc.category_name
 from
@@ -128,4 +128,5 @@ from
 drivers dr
 right join 
 cities ct
-on ct.city_id = dr.city_id
+on ct.city_id = dr.city_id;
+
