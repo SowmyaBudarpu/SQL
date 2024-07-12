@@ -1,12 +1,11 @@
-1. HappyHaven is a fast-growing house rental app that connects property owners with potential renters.
+ HappyHaven is a fast-growing house rental app that connects property owners with potential renters.
 As a data analyst at HappyHaven, your role is crucial in unlocking the power of data to understand user behavior, property performance, and overall market trends.
 By leveraging the company's extensive database, you contribute to various aspects of the business, ensuring data-driven decision-making and continuous
 improvement of the app's features and offerings.
 Overall, this database design enables users to browse and book properties, leave reviews, add properties to favorites, and make payments for their bookings. 
 The tables are interconnected using primary keys and foreign keys to maintain data integrity and provide a well-structured database for the property rental system.
 
-Task
-Retrieve all reviews by users who have booked properties in more than one location.
+1. Retrieve all reviews by users who have booked properties in more than one location.
 Arrange the results in ascending order of user IDs.
 
 select rv.property_id, rv.user_id, rv.comment
@@ -70,4 +69,45 @@ properties prop
 where prop.rating >
 (select avg(rating) from properties)
 order by prop.property_id;
+
+Get the user with the maximum number of favorite properties.
+
+select user_id, count(property_id) as favorite_count
+from favorites
+group by user_id
+having count(property_id)=
+(select max(favorite_count)
+from
+(select count(property_id) as favorite_count
+from favorites 
+group by user_id)
+as user_fav);
+
+6. Find the properties that have all the following amenities available: 'Heating' and 'Kitchen'.
+
+select prop.property_id, prop.title, prop.location
+from
+properties prop 
+where prop.property_id
+in
+(select pa.property_id
+from 
+propertyamenities pa 
+join 
+amenities am
+on pa.amenity_id = am.amenity_id
+where am.name in ('Heating', 'Kitchen')
+group by pa.property_id);
+
+7. Retrieve properties with the highest two bookings in Canada.
+
+select prop.property_id, prop.title, prop.location,
+(select count(*)
+from bookings bk
+where bk.property_id = prop.property_id) as booking_count
+from 
+properties prop
+where prop.location like '%Canada%'
+order by booking_count desc
+limit 2;
 
